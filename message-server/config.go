@@ -9,6 +9,5 @@ type Config struct {
 }
 
 type Topics struct {
-	ApprovedPkg           string `json:"approved_pkg"               required:"true"`
-	IndirectlyApprovedPkg string `json:"indirectly_approved_pkg"    required:"true"`
+	SoftwarePkgInitialized string `json:"software_pkg_initialized" required:"true"`
 }
