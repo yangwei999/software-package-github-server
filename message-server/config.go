@@ -9,5 +9,5 @@ type Config struct {
 }
 
 type Topics struct {
-	SoftwarePkgInitialized string `json:"software_pkg_initialized" required:"true"`
+	NewPkg string `json:"new_pkg" required:"true"`
 }

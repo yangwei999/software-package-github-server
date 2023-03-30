@@ -16,16 +16,10 @@ type SoftwarePkg struct {
 	SourceCode
 }
 
-func NewPushCode(pkgName, importer, importerEmail, spec, rpm string) SoftwarePkg {
+func NewSoftwarePkg(pkgName string, i Importer, s SourceCode) SoftwarePkg {
 	return SoftwarePkg{
-		PkgName: pkgName,
-		Importer: Importer{
-			Name:  importer,
-			Email: importerEmail,
-		},
-		SourceCode: SourceCode{
-			SpecURL:   spec,
-			SrcRPMURL: rpm,
-		},
+		PkgName:    pkgName,
+		Importer:   i,
+		SourceCode: s,
 	}
 }

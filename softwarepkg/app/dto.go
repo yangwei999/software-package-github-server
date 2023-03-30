@@ -1,6 +1,6 @@
 package app
 
-type CmdToHandlePkgInitialized struct {
+type CmdToHandleNewPkg struct {
 	Importer          string `json:"importer"`
 	ImporterEmail     string `json:"importer_email"`
 	PkgId             string `json:"pkg_id"`
@@ -10,4 +10,5 @@ type CmdToHandlePkgInitialized struct {
 	SrcRPMURL         string `json:"src_rpm_url"`
 	ImportingPkgSig   string `json:"sig"`
 	ReasonToImportPkg string `json:"reason_to_import"`
+	Platform          string `json:"platform"`
 }

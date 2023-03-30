@@ -8,7 +8,7 @@ import (
 )
 
 type MessageService interface {
-	HandlePkgInitialized(CmdToHandlePkgInitialized) error
+	HandleNewPkg(CmdToHandleNewPkg) error
 }
 
 func NewMessageService(
@@ -29,7 +29,11 @@ type messageService struct {
 	code     code.Code
 }
 
-func (m *messageService) HandlePkgInitialized(cmd CmdToHandlePkgInitialized) error {
+func (m *messageService) HandleNewPkg(cmd CmdToHandleNewPkg) error {
+	if cmd.Platform != domain.PlatformGithub {
+		return nil
+	}
+
 	url, err := m.pr.CreateRepo(cmd.PkgName)
 	if err != nil {
 		return err
@@ -41,8 +45,16 @@ func (m *messageService) HandlePkgInitialized(cmd CmdToHandlePkgInitialized) err
 	}
 
 	e = domain.NewCodePushedEvent(cmd.PkgId)
-	v := domain.NewPushCode(cmd.PkgName, cmd.Importer,
-		cmd.ImporterEmail, cmd.SpecURL, cmd.SrcRPMURL,
+	v := domain.NewSoftwarePkg(
+		cmd.PkgName,
+		domain.Importer{
+			Name:  cmd.Importer,
+			Email: cmd.ImporterEmail,
+		},
+		domain.SourceCode{
+			SpecURL:   cmd.SpecURL,
+			SrcRPMURL: cmd.SrcRPMURL,
+		},
 	)
 	if err = m.code.Push(&v); err != nil {
 		e.FailedReason = err.Error()
