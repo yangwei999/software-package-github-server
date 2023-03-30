@@ -28,7 +28,7 @@ type CodeImpl struct {
 	script string
 }
 
-func (impl *CodeImpl) Push(code *domain.PushCode) error {
+func (impl *CodeImpl) Push(code *domain.SoftwarePkg) error {
 	repoUrl := fmt.Sprintf("%s%s.git", impl.gitUrl, code.PkgName)
 
 	params := []string{
