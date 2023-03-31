@@ -40,15 +40,14 @@ func (p *pkgService) HandleCreateRepo(pkg *domain.SoftwarePkg) error {
 		return err
 	}
 
-	pkg.SetPkgStatusRepoCreated()
-
-	if err = p.repository.Save(pkg); err != nil {
+	e := domain.NewRepoCreatedEvent(pkg.Id, url)
+	if err = p.producer.NotifyRepoCreatedResult(&e); err != nil {
 		return err
 	}
 
-	e := domain.NewRepoCreatedEvent(pkg.Id, url)
+	pkg.SetPkgStatusRepoCreated()
 
-	return p.producer.NotifyRepoCreatedResult(&e)
+	return p.repository.Save(pkg)
 }
 
 func (p *pkgService) HandlePushCode(pkg *domain.SoftwarePkg) error {
@@ -59,11 +58,10 @@ func (p *pkgService) HandlePushCode(pkg *domain.SoftwarePkg) error {
 		return err
 	}
 
-	if err = p.repository.Remove(pkg.Id); err != nil {
+	e := domain.NewCodePushedEvent(pkg.Id, repoUrl)
+	if err = p.producer.NotifyCodePushedResult(&e); err != nil {
 		return err
 	}
 
-	e := domain.NewCodePushedEvent(pkg.Id, repoUrl)
-
-	return p.producer.NotifyCodePushedResult(&e)
+	return p.repository.Remove(pkg.Id)
 }
