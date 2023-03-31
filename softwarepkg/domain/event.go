@@ -23,11 +23,10 @@ func NewRepoCreatedEvent(pkgId, url string) RepoCreatedEvent {
 	}
 }
 
-type CodePushedEvent = RepoCreatedEvent
-
-func NewCodePushedEvent(pkgId string) CodePushedEvent {
-	return CodePushedEvent{
+func NewCodePushedEvent(pkgId, link string) RepoCreatedEvent {
+	return RepoCreatedEvent{
 		PkgId:    pkgId,
 		Platform: PlatformGithub,
+		RepoLink: link,
 	}
 }
