@@ -2,31 +2,21 @@ package app
 
 import (
 	"github.com/opensourceways/software-package-github-server/softwarepkg/domain"
-	"github.com/opensourceways/software-package-github-server/softwarepkg/domain/code"
-	"github.com/opensourceways/software-package-github-server/softwarepkg/domain/message"
-	"github.com/opensourceways/software-package-github-server/softwarepkg/domain/repo"
+	"github.com/opensourceways/software-package-github-server/softwarepkg/domain/repository"
 )
 
 type MessageService interface {
 	HandleNewPkg(CmdToHandleNewPkg) error
 }
 
-func NewMessageService(
-	p repo.Repo,
-	s message.SoftwarePkgProducer,
-	c code.Code,
-) *messageService {
+func NewMessageService(r repository.SoftwarePkg) *messageService {
 	return &messageService{
-		pr:       p,
-		producer: s,
-		code:     c,
+		repository: r,
 	}
 }
 
 type messageService struct {
-	pr       repo.Repo
-	producer message.SoftwarePkgProducer
-	code     code.Code
+	repository repository.SoftwarePkg
 }
 
 func (m *messageService) HandleNewPkg(cmd CmdToHandleNewPkg) error {
@@ -34,19 +24,11 @@ func (m *messageService) HandleNewPkg(cmd CmdToHandleNewPkg) error {
 		return nil
 	}
 
-	url, err := m.pr.CreateRepo(cmd.PkgName)
-	if err != nil {
-		return err
-	}
-
-	e := domain.NewRepoCreatedEvent(cmd.PkgId, url)
-	if err = m.producer.NotifyRepoCreatedResult(&e); err != nil {
-		return err
-	}
-
-	e = domain.NewCodePushedEvent(cmd.PkgId)
-	v := domain.NewSoftwarePkg(
-		cmd.PkgName,
+	pkg := domain.NewSoftwarePkg(
+		domain.SoftwarePkgBasic{
+			Id:   cmd.PkgId,
+			Name: cmd.PkgName,
+		},
 		domain.Importer{
 			Name:  cmd.Importer,
 			Email: cmd.ImporterEmail,
@@ -56,9 +38,6 @@ func (m *messageService) HandleNewPkg(cmd CmdToHandleNewPkg) error {
 			SrcRPMURL: cmd.SrcRPMURL,
 		},
 	)
-	if err = m.code.Push(&v); err != nil {
-		e.FailedReason = err.Error()
-	}
 
-	return m.producer.NotifyCodePushedResult(&e)
+	return m.repository.Add(&pkg)
 }

@@ -21,6 +21,8 @@ import (
 	"github.com/opensourceways/software-package-github-server/softwarepkg/infrastructure/codeimpl"
 	"github.com/opensourceways/software-package-github-server/softwarepkg/infrastructure/messageimpl"
 	"github.com/opensourceways/software-package-github-server/softwarepkg/infrastructure/repoimpl"
+	"github.com/opensourceways/software-package-github-server/softwarepkg/infrastructure/repositoryimpl"
+	"github.com/opensourceways/software-package-github-server/softwarepkg/infrastructure/watchingimpl"
 )
 
 type options struct {
@@ -76,12 +78,27 @@ func main() {
 	defer secretAgent.Stop()
 
 	c := client.NewClient(secretAgent.GetTokenGenerator(o.github.TokenPath))
-	msgService := app.NewMessageService(
+
+	repository := repositoryimpl.NewSoftwarePkgPR(&cfg.Postgresql.Config)
+
+	pkgService := app.NewPkgService(
 		repoimpl.NewRepoImpl(cfg.Repo, c),
-		messageimpl.NewMessageImpl(cfg.MessageServer.Message),
+		repository,
 		codeimpl.NewCodeImpl(cfg.Code),
+		messageimpl.NewMessageImpl(cfg.MessageServer.Message),
 	)
 
+	watch := watchingimpl.NewWatchingImpl(cfg.Watch, repository, pkgService)
+	ctx, cancel := context.WithCancel(context.Background())
+	stop := make(chan struct{})
+	go watch.Start(ctx, stop)
+	defer func() {
+		cancel()
+		<-stop
+		logrus.Info("watch exit normally")
+	}()
+
+	msgService := app.NewMessageService(repository)
 	ms := messageserver.Init(msgService, cfg.MessageServer)
 
 	run(ms)
