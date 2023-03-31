@@ -18,6 +18,7 @@ import (
 	"github.com/opensourceways/software-package-github-server/message-server"
 	"github.com/opensourceways/software-package-github-server/mq"
 	"github.com/opensourceways/software-package-github-server/softwarepkg/app"
+	"github.com/opensourceways/software-package-github-server/softwarepkg/infrastructure/codeimpl"
 	"github.com/opensourceways/software-package-github-server/softwarepkg/infrastructure/messageimpl"
 	"github.com/opensourceways/software-package-github-server/softwarepkg/infrastructure/repoimpl"
 )
@@ -78,6 +79,7 @@ func main() {
 	msgService := app.NewMessageService(
 		repoimpl.NewRepoImpl(cfg.Repo, c),
 		messageimpl.NewMessageImpl(cfg.MessageServer.Message),
+		codeimpl.NewCodeImpl(cfg.Code),
 	)
 
 	ms := messageserver.Init(msgService, cfg.MessageServer)

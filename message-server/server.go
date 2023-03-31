@@ -32,19 +32,18 @@ func (m *MessageServer) Run(ctx context.Context) error {
 
 func (m *MessageServer) subscribe() error {
 	h := map[string]mq.Handler{
-		m.cfg.Topics.ApprovedPkg:           m.handleCreateRepo,
-		m.cfg.Topics.IndirectlyApprovedPkg: m.handleCreateRepo,
+		m.cfg.Topics.NewPkg: m.handleNewPkg,
 	}
 
 	return mq.Subscriber().Subscribe(m.cfg.Group, h)
 }
 
-func (m *MessageServer) handleCreateRepo(data []byte) error {
-	msg := new(CreateRepoEvent)
+func (m *MessageServer) handleNewPkg(data []byte) error {
+	msg := new(msgToHandleNewPkg)
 
 	if err := json.Unmarshal(data, msg); err != nil {
 		return err
 	}
 
-	return m.service.CreateRepo(*msg)
+	return m.service.HandleNewPkg(*msg)
 }

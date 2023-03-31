@@ -5,6 +5,7 @@ import (
 
 	"github.com/opensourceways/software-package-github-server/message-server"
 	"github.com/opensourceways/software-package-github-server/mq"
+	"github.com/opensourceways/software-package-github-server/softwarepkg/infrastructure/codeimpl"
 	"github.com/opensourceways/software-package-github-server/softwarepkg/infrastructure/repoimpl"
 )
 
@@ -12,6 +13,7 @@ type Config struct {
 	MQ            mq.Config            `json:"mq"`
 	MessageServer messageserver.Config `json:"message_server"`
 	Repo          repoimpl.Config      `json:"repo"`
+	Code          codeimpl.Config      `json:"code"`
 }
 
 func LoadConfig(path string) (*Config, error) {
@@ -33,6 +35,7 @@ func (cfg *Config) configItems() []interface{} {
 		&cfg.MQ,
 		&cfg.MessageServer,
 		&cfg.Repo,
+		&cfg.Code,
 	}
 }
 

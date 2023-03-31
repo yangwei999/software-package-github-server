@@ -19,6 +19,10 @@ func (m *MessageImpl) NotifyRepoCreatedResult(msg message.EventMessage) error {
 	return send(m.cfg.TopicsToNotify.CreatedRepo, msg)
 }
 
+func (m *MessageImpl) NotifyCodePushedResult(msg message.EventMessage) error {
+	return send(m.cfg.TopicsToNotify.PushedCode, msg)
+}
+
 func send(topic string, v message.EventMessage) error {
 	body, err := v.Message()
 	if err != nil {
