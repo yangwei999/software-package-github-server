@@ -1,9 +1,10 @@
 package codeimpl
 
 import (
+	"errors"
 	"fmt"
+	"os/exec"
 
-	"github.com/opensourceways/server-common-lib/utils"
 	"github.com/sirupsen/logrus"
 
 	"github.com/opensourceways/software-package-github-server/softwarepkg/domain"
@@ -41,7 +42,7 @@ func (impl *CodeImpl) Push(pkg *domain.SoftwarePkg) (string, error) {
 		pkg.SrcRPMURL,
 	}
 
-	_, err, _ := utils.RunCmd(params...)
+	err := RunCmd(params...)
 	if err != nil {
 		logrus.Errorf(
 			"run push code shell, err=%s, params=%v",
@@ -50,4 +51,27 @@ func (impl *CodeImpl) Push(pkg *domain.SoftwarePkg) (string, error) {
 	}
 
 	return repoUrl, err
+}
+
+func RunCmd(args ...string) error {
+	n := len(args)
+	if n == 0 {
+		return nil
+	}
+
+	cmd := args[0]
+
+	if n > 1 {
+		args = args[1:]
+	} else {
+		args = nil
+	}
+
+	c := exec.Command(cmd, args...)
+	out, err := c.CombinedOutput()
+	if err != nil {
+		return errors.New(string(out))
+	}
+
+	return nil
 }
