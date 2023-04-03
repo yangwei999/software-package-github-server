@@ -70,7 +70,7 @@ func RunCmd(args ...string) error {
 	c := exec.Command(cmd, args...)
 	out, err := c.CombinedOutput()
 	if err != nil {
-		return errors.New(string(out))
+		return errors.New(string(out) + err.Error())
 	}
 
 	return nil
