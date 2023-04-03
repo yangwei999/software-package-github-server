@@ -3,13 +3,11 @@ package main
 import (
 	"context"
 	"flag"
-	"fmt"
 	"os"
 	"os/signal"
 	"sync"
 	"syscall"
 
-	"github.com/google/go-github/v36/github"
 	"github.com/opensourceways/robot-github-lib/client"
 	"github.com/opensourceways/server-common-lib/logrusutil"
 	liboptions "github.com/opensourceways/server-common-lib/options"
@@ -94,10 +92,6 @@ func main() {
 	defer secretAgent.Stop()
 
 	c := client.NewClient(secretAgent.GetTokenGenerator(o.github.TokenPath))
-	repo := "offset2"
-	err = c.CreateRepo(cfg.Repo.Org, &github.Repository{Name: &repo})
-	fmt.Println(err)
-	os.Exit(1)
 
 	repository := repositoryimpl.NewSoftwarePkgPR(&cfg.Postgresql.Config)
 
