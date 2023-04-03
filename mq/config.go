@@ -4,6 +4,8 @@ import (
 	"errors"
 	"regexp"
 	"strings"
+
+	"github.com/opensourceways/kafka-lib/mq"
 )
 
 var reIpPort = regexp.MustCompile(`^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)\.?\b){4}:[1-9][0-9]*$`)
@@ -18,6 +20,12 @@ func (cfg *Config) Validate() error {
 	}
 
 	return nil
+}
+
+func (cfg *Config) mqConfig() mq.MQConfig {
+	return mq.MQConfig{
+		Addresses: cfg.parseAddress(),
+	}
 }
 
 func (cfg *Config) parseAddress() []string {

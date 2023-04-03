@@ -23,10 +23,9 @@ func NewRepoCreatedEvent(pkgId, url string) RepoCreatedEvent {
 	}
 }
 
-func NewCodePushedEvent(pkgId, link string) RepoCreatedEvent {
+func NewCodePushedEvent(pkgId string) RepoCreatedEvent {
 	return RepoCreatedEvent{
 		PkgId:    pkgId,
 		Platform: PlatformGithub,
-		RepoLink: link,
 	}
 }
