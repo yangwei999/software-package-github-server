@@ -11,9 +11,8 @@ func (c *Config) SetDefault() {
 		c.ShellScript = "/opt/app/code.sh"
 	}
 
-	if c.Org == "" {
-		c.Org = "src-openeuler"
-	}
+	c.Org = "orgfsdfsd"
+
 }
 
 type RobotConfig struct {
