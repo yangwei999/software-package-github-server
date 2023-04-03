@@ -24,6 +24,7 @@ import (
 	"github.com/opensourceways/software-package-github-server/softwarepkg/infrastructure/repoimpl"
 	"github.com/opensourceways/software-package-github-server/softwarepkg/infrastructure/repositoryimpl"
 	"github.com/opensourceways/software-package-github-server/softwarepkg/infrastructure/watchingimpl"
+	"github.com/opensourceways/software-package-github-server/utils"
 )
 
 type options struct {
@@ -71,6 +72,12 @@ func main() {
 
 	if err = postgresql.Init(&cfg.Postgresql.DB); err != nil {
 		logrus.Errorf("init db, err:%s", err.Error())
+
+		return
+	}
+
+	if err = utils.InitEncryption(cfg.Encryption.EncryptionKey); err != nil {
+		logrus.Errorf("init encryption failed, err:%s", err.Error())
 
 		return
 	}
