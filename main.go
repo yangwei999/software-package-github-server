@@ -20,6 +20,7 @@ import (
 	"github.com/opensourceways/software-package-github-server/softwarepkg/app"
 	"github.com/opensourceways/software-package-github-server/softwarepkg/infrastructure/codeimpl"
 	"github.com/opensourceways/software-package-github-server/softwarepkg/infrastructure/messageimpl"
+	"github.com/opensourceways/software-package-github-server/softwarepkg/infrastructure/postgresql"
 	"github.com/opensourceways/software-package-github-server/softwarepkg/infrastructure/repoimpl"
 	"github.com/opensourceways/software-package-github-server/softwarepkg/infrastructure/repositoryimpl"
 	"github.com/opensourceways/software-package-github-server/softwarepkg/infrastructure/watchingimpl"
@@ -67,6 +68,12 @@ func main() {
 	}
 
 	defer mq.Exit()
+
+	if err = postgresql.Init(&cfg.Postgresql.DB); err != nil {
+		logrus.Errorf("init db, err:%s", err.Error())
+
+		return
+	}
 
 	secretAgent := new(secret.Agent)
 	if err = secretAgent.Start([]string{o.github.TokenPath}); err != nil {
