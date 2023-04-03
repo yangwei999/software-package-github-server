@@ -47,14 +47,13 @@ func (impl *WatchingImpl) Start(ctx context.Context, stop chan struct{}) {
 
 		for _, pkg := range pkgs {
 			impl.handle(&pkg)
-
-			if checkStop() {
-				close(stop)
-
-				return
-			}
 		}
 
+		if checkStop() {
+			close(stop)
+
+			return
+		}
 		time.Sleep(interval)
 	}
 }
