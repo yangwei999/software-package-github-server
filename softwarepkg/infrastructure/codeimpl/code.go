@@ -29,7 +29,7 @@ type CodeImpl struct {
 	script string
 }
 
-func (impl *CodeImpl) Push(pkg *domain.SoftwarePkg) (string, error) {
+func (impl *CodeImpl) Push(pkg *domain.SoftwarePkg) error {
 	repoUrl := fmt.Sprintf("%s%s.git", impl.gitUrl, pkg.Name)
 
 	params := []string{
@@ -50,7 +50,7 @@ func (impl *CodeImpl) Push(pkg *domain.SoftwarePkg) (string, error) {
 		)
 	}
 
-	return repoUrl, err
+	return err
 }
 
 func RunCmd(args ...string) error {

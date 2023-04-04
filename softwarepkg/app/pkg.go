@@ -51,15 +51,14 @@ func (p *pkgService) HandleCreateRepo(pkg *domain.SoftwarePkg) error {
 }
 
 func (p *pkgService) HandlePushCode(pkg *domain.SoftwarePkg) error {
-	repoUrl, err := p.code.Push(pkg)
-	if err != nil {
+	if err := p.code.Push(pkg); err != nil {
 		logrus.Errorf("pkgId %s push code err: %s", pkg.Id, err.Error())
 
 		return err
 	}
 
-	e := domain.NewCodePushedEvent(pkg.Id, repoUrl)
-	if err = p.producer.NotifyCodePushedResult(&e); err != nil {
+	e := domain.NewCodePushedEvent(pkg.Id)
+	if err := p.producer.NotifyCodePushedResult(&e); err != nil {
 		return err
 	}
 
