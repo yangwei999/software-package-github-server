@@ -17,15 +17,22 @@ func NewCodeImpl(cfg Config) *CodeImpl {
 		cfg.Org,
 	)
 
+	repoUrl := fmt.Sprintf(
+		"https://github.com/%s/",
+		cfg.Org,
+	)
+
 	return &CodeImpl{
-		gitUrl: gitUrl,
-		script: cfg.ShellScript,
+		gitUrl:  gitUrl,
+		repoUrl: repoUrl,
+		script:  cfg.ShellScript,
 	}
 }
 
 type CodeImpl struct {
-	gitUrl string
-	script string
+	gitUrl  string
+	repoUrl string
+	script  string
 }
 
 func (impl *CodeImpl) Push(pkg *domain.SoftwarePkg) (string, error) {
@@ -41,13 +48,13 @@ func (impl *CodeImpl) Push(pkg *domain.SoftwarePkg) (string, error) {
 		pkg.SrcRPMURL,
 	}
 
-	_, err, _ := utils.RunCmd(params...)
+	out, err, _ := utils.RunCmd(params...)
 	if err != nil {
 		logrus.Errorf(
-			"run push code shell, err=%s, params=%v",
-			err.Error(), params[:len(params)-1],
+			"run push code shell, err=%s, out=%s, params=%v",
+			err.Error(), string(out), params[:len(params)-1],
 		)
 	}
 
-	return repoUrl, err
+	return impl.repoUrl + pkg.Name, err
 }

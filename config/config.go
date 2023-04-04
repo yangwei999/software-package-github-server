@@ -10,6 +10,7 @@ import (
 	"github.com/opensourceways/software-package-github-server/softwarepkg/infrastructure/repoimpl"
 	"github.com/opensourceways/software-package-github-server/softwarepkg/infrastructure/repositoryimpl"
 	"github.com/opensourceways/software-package-github-server/softwarepkg/infrastructure/watchingimpl"
+	localutils "github.com/opensourceways/software-package-github-server/utils"
 )
 
 type PostgresqlConfig struct {
@@ -25,6 +26,7 @@ type Config struct {
 	Repo          repoimpl.Config      `json:"repo"`
 	Code          codeimpl.Config      `json:"code"`
 	Watch         watchingimpl.Config  `json:"watch"`
+	Encryption    localutils.Config    `json:"encryption"`
 }
 
 func LoadConfig(path string) (*Config, error) {
