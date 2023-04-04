@@ -14,7 +14,6 @@ func (c *Config) SetDefault() {
 	if c.Org == "" {
 		c.Org = "src-openeuler"
 	}
-
 }
 
 type RobotConfig struct {
