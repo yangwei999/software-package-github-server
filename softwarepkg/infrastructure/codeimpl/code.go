@@ -13,7 +13,7 @@ import (
 func NewCodeImpl(cfg Config) *CodeImpl {
 	gitUrl := fmt.Sprintf(
 		"https://%s:%s@github.com/%s/",
-		"yangwei999",
+		cfg.Robot.Username,
 		cfg.Robot.Token,
 		cfg.Org,
 	)
