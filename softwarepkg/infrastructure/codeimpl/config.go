@@ -11,7 +11,9 @@ func (c *Config) SetDefault() {
 		c.ShellScript = "/opt/app/code.sh"
 	}
 
-	c.Org = "orgfsdfsd"
+	if c.Org == "" {
+		c.Org = "src-openeuler"
+	}
 
 }
 

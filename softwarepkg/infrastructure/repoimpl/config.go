@@ -5,7 +5,7 @@ type Config struct {
 }
 
 func (cfg *Config) SetDefault() {
-
-	cfg.Org = "orgfsdfsd"
-
+	if cfg.Org == "" {
+		cfg.Org = "src-openeuler"
+	}
 }
