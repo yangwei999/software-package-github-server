@@ -14,7 +14,7 @@ func NewCodeImpl(cfg Config) *CodeImpl {
 	gitUrl := fmt.Sprintf(
 		"https://%s:%s@github.com/%s/",
 		"yangwei999",
-		"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",
+		cfg.Robot.Token,
 		cfg.Org,
 	)
 

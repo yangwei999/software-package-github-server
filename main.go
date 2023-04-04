@@ -83,7 +83,7 @@ func main() {
 	}
 
 	secretAgent := new(secret.Agent)
-	if err = secretAgent.Start([]string{"/opt/app/token"}); err != nil {
+	if err = secretAgent.Start([]string{o.github.TokenPath}); err != nil {
 		logrus.Errorf("starting secret agent error: %v", err)
 
 		return
