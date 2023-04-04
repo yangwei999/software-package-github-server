@@ -64,12 +64,6 @@ func main() {
 		logrus.Fatalf("load config file failed: %v", err)
 	}
 
-	if err = mq.Init(&cfg.MQ, log); err != nil {
-		logrus.Fatalf("initialize mq failed, err:%v", err)
-	}
-
-	defer mq.Exit()
-
 	if err = postgresql.Init(&cfg.Postgresql.DB); err != nil {
 		logrus.Errorf("init db, err:%s", err.Error())
 
@@ -81,6 +75,12 @@ func main() {
 
 		return
 	}
+
+	if err = mq.Init(&cfg.MQ, log); err != nil {
+		logrus.Fatalf("initialize mq failed, err:%v", err)
+	}
+
+	defer mq.Exit()
 
 	secretAgent := new(secret.Agent)
 	if err = secretAgent.Start([]string{o.github.TokenPath}); err != nil {

@@ -17,18 +17,25 @@ func NewCodeImpl(cfg Config) *CodeImpl {
 		cfg.Org,
 	)
 
+	repoUrl := fmt.Sprintf(
+		"https://github.com/%s/",
+		cfg.Org,
+	)
+
 	return &CodeImpl{
-		gitUrl: gitUrl,
-		script: cfg.ShellScript,
+		gitUrl:  gitUrl,
+		repoUrl: repoUrl,
+		script:  cfg.ShellScript,
 	}
 }
 
 type CodeImpl struct {
-	gitUrl string
-	script string
+	gitUrl  string
+	repoUrl string
+	script  string
 }
 
-func (impl *CodeImpl) Push(pkg *domain.SoftwarePkg) error {
+func (impl *CodeImpl) Push(pkg *domain.SoftwarePkg) (string, error) {
 	repoUrl := fmt.Sprintf("%s%s.git", impl.gitUrl, pkg.Name)
 
 	params := []string{
@@ -49,5 +56,5 @@ func (impl *CodeImpl) Push(pkg *domain.SoftwarePkg) error {
 		)
 	}
 
-	return err
+	return impl.repoUrl + pkg.Name, err
 }
