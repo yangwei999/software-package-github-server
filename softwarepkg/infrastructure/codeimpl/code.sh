@@ -8,6 +8,7 @@ user=$3
 email=$4
 spec_url=$5
 src_rpm_url=$6
+token=$7
 
 if [ -d $repo ]; then
     rm -rf $repo
@@ -22,7 +23,7 @@ git config user.email $email
 
 curl -LO $spec_url
 
-curl -LO $src_rpm_url
+python3 download.py $src_rpm_url $token
 rpm2cpio *.rpm | cpio -div
 rm -rf *.rpm
 

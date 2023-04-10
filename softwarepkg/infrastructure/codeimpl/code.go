@@ -26,6 +26,7 @@ func NewCodeImpl(cfg Config) *CodeImpl {
 		gitUrl:  gitUrl,
 		repoUrl: repoUrl,
 		script:  cfg.ShellScript,
+		token:   cfg.Robot.Token,
 	}
 }
 
@@ -33,6 +34,7 @@ type CodeImpl struct {
 	gitUrl  string
 	repoUrl string
 	script  string
+	token   string
 }
 
 func (impl *CodeImpl) Push(pkg *domain.SoftwarePkg) (string, error) {
@@ -46,6 +48,7 @@ func (impl *CodeImpl) Push(pkg *domain.SoftwarePkg) (string, error) {
 		pkg.Importer.Email,
 		pkg.SpecURL,
 		pkg.SrcRPMURL,
+		impl.token,
 	}
 
 	out, err, _ := utils.RunCmd(params...)
