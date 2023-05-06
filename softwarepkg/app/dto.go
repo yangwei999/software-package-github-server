@@ -11,4 +11,5 @@ type CmdToHandleNewPkg struct {
 	ImportingPkgSig   string `json:"sig"`
 	ReasonToImportPkg string `json:"reason_to_import"`
 	Platform          string `json:"platform"`
+	CIPRNum           int    `json:"ci_pr_num"`
 }

@@ -37,6 +37,7 @@ func (m *messageService) HandleNewPkg(cmd CmdToHandleNewPkg) error {
 			SpecURL:   cmd.SpecURL,
 			SrcRPMURL: cmd.SrcRPMURL,
 		},
+		cmd.CIPRNum,
 	)
 
 	return m.repository.Add(&pkg)
