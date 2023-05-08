@@ -2,6 +2,7 @@ package codeimpl
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/opensourceways/server-common-lib/utils"
 	"github.com/sirupsen/logrus"
@@ -26,6 +27,7 @@ func NewCodeImpl(cfg Config) *CodeImpl {
 		gitUrl:  gitUrl,
 		repoUrl: repoUrl,
 		script:  cfg.ShellScript,
+		ciRepo:  cfg.CIRepo,
 	}
 }
 
@@ -33,6 +35,7 @@ type CodeImpl struct {
 	gitUrl  string
 	repoUrl string
 	script  string
+	ciRepo  CIRepo
 }
 
 func (impl *CodeImpl) Push(pkg *domain.SoftwarePkg) (string, error) {
@@ -44,8 +47,9 @@ func (impl *CodeImpl) Push(pkg *domain.SoftwarePkg) (string, error) {
 		pkg.Name,
 		pkg.Importer.Name,
 		pkg.Importer.Email,
-		pkg.SpecURL,
-		pkg.SrcRPMURL,
+		impl.ciRepo.Link,
+		impl.ciRepo.Repo,
+		strconv.Itoa(pkg.CIPRNum),
 	}
 
 	out, err, _ := utils.RunCmd(params...)

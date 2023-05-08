@@ -14,6 +14,7 @@ type SoftwarePkgPRDO struct {
 	// must set "uuid" as the name of column
 	PkgId         uuid.UUID `gorm:"column:uuid;type:uuid"`
 	PkgName       string    `gorm:"column:pkg_name"`
+	CIPRNum       int       `gorm:"column:ci_pr_num"`
 	Status        string    `gorm:"column:status"`
 	ImporterName  string    `gorm:"column:importer_name"`
 	ImporterEmail string    `gorm:"column:importer_email"`
@@ -33,6 +34,7 @@ func (s softwarePkgPR) toSoftwarePkgPRDO(p *domain.SoftwarePkg, id uuid.UUID, do
 		PkgId:         id,
 		Status:        p.Status,
 		PkgName:       p.Name,
+		CIPRNum:       p.CIPRNum,
 		ImporterName:  p.Importer.Name,
 		ImporterEmail: email,
 		SpecURL:       p.SpecURL,
@@ -51,6 +53,7 @@ func (do *SoftwarePkgPRDO) toDomainPullRequest() (pkg domain.SoftwarePkg, err er
 
 	pkg.Status = do.Status
 	pkg.Name = do.PkgName
+	pkg.CIPRNum = do.CIPRNum
 	pkg.Id = do.PkgId.String()
 	pkg.Importer.Name = do.ImporterName
 	pkg.SpecURL = do.SpecURL

@@ -26,17 +26,19 @@ type SoftwarePkg struct {
 	Status   string
 	Importer Importer
 	SourceCode
+	CIPRNum int
 }
 
 func (s *SoftwarePkg) SetPkgStatusRepoCreated() {
 	s.Status = PkgStatusRepoCreated
 }
 
-func NewSoftwarePkg(b SoftwarePkgBasic, i Importer, s SourceCode) SoftwarePkg {
+func NewSoftwarePkg(b SoftwarePkgBasic, i Importer, s SourceCode, p int) SoftwarePkg {
 	return SoftwarePkg{
 		SoftwarePkgBasic: b,
 		Importer:         i,
 		SourceCode:       s,
 		Status:           PkgStatusInitialized,
+		CIPRNum:          p,
 	}
 }
