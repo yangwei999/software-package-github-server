@@ -1,4 +1,7 @@
-FROM golang:1.18.8 as BUILDER
+FROM openeuler/openeuler:23.03 as BUILDER
+RUN dnf update -y && \
+    dnf install -y golang && \
+    go env -w GOPROXY=https://goproxy.cn,direct
 
 MAINTAINER zengchen1024<chenzeng765@gmail.com>
 
@@ -8,9 +11,16 @@ COPY . .
 RUN GO111MODULE=on CGO_ENABLED=0 go build -a -o software-package-github-server .
 
 # copy binary config and utils
-FROM alpine:3.14
-COPY --from=BUILDER /go/src/github.com/opensourceways/software-package-github-server/software-package-github-server /opt/app/software-package-github-server
-COPY softwarepkg/infrastructure/codeimpl/code.sh /opt/app/code.sh
+FROM openeuler/openeuler:22.03
+RUN dnf -y update && \
+    dnf in -y shadow && \
+    groupadd -g 1000 software-package-github-server && \
+    useradd -u 1000 -g software-package-github-server -s /bin/bash -m software-package-github-server
+
+USER software-package-github-server
+
+COPY --chown=software-package-github-server --from=BUILDER /go/src/github.com/opensourceways/software-package-github-server/software-package-github-server /opt/app/software-package-github-server
+COPY --chown=software-package-github-server softwarepkg/infrastructure/codeimpl/code.sh /opt/app/code.sh
 RUN chmod +x /opt/app/code.sh && apk update && apk add --no-cache git libc6-compat rpm
 
 ENTRYPOINT ["/opt/app/software-package-github-server"]
