@@ -21,6 +21,6 @@ USER software-package-github-server
 
 COPY --chown=software-package-github-server --from=BUILDER /go/src/github.com/opensourceways/software-package-github-server/software-package-github-server /opt/app/software-package-github-server
 COPY --chown=software-package-github-server softwarepkg/infrastructure/codeimpl/code.sh /opt/app/code.sh
-RUN chmod +x /opt/app/code.sh && apk update && apk add --no-cache git libc6-compat rpm
+RUN chmod +x /opt/app/code.sh
 
 ENTRYPOINT ["/opt/app/software-package-github-server"]
