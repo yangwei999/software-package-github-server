@@ -14,6 +14,7 @@ RUN GO111MODULE=on CGO_ENABLED=0 go build -a -o software-package-github-server .
 FROM openeuler/openeuler:22.03
 RUN dnf -y update && \
     dnf in -y shadow && \
+    dnf install -y git && \
     groupadd -g 1000 software-package-github-server && \
     useradd -u 1000 -g software-package-github-server -s /bin/bash -m software-package-github-server
 
