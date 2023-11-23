@@ -44,7 +44,7 @@ func (impl *CodeImpl) Push(pkg *domain.PushCode) (string, error) {
 	params := []string{
 		impl.script,
 		repoUrl,
-		pkg.PkgId,
+		pkg.PkgName,
 		pkg.Importer,
 		pkg.ImporterEmail,
 		impl.ciRepo.Link,
