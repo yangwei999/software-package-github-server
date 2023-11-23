@@ -1,44 +1,13 @@
 package domain
 
-const (
-	PkgStatusInitialized = "initialized"
-	PkgStatusRepoCreated = "repo_created"
-)
-
-type Importer struct {
-	Name  string
-	Email string
-}
-
-type SourceCode struct {
-	SpecURL   string
-	SrcRPMURL string
-}
-
-type SoftwarePkgBasic struct {
-	Id   string
-	Name string
-}
-
-type SoftwarePkg struct {
-	SoftwarePkgBasic
-
-	Status   string
-	Importer Importer
-	SourceCode
-	CIPRNum int
-}
-
-func (s *SoftwarePkg) SetPkgStatusRepoCreated() {
-	s.Status = PkgStatusRepoCreated
-}
-
-func NewSoftwarePkg(b SoftwarePkgBasic, i Importer, s SourceCode, p int) SoftwarePkg {
-	return SoftwarePkg{
-		SoftwarePkgBasic: b,
-		Importer:         i,
-		SourceCode:       s,
-		Status:           PkgStatusInitialized,
-		CIPRNum:          p,
-	}
+type PushCode struct {
+	Importer          string `json:"importer"`
+	ImporterEmail     string `json:"importer_email"`
+	PkgId             string `json:"pkg_id"`
+	PkgName           string `json:"pkg_name"`
+	PkgDesc           string `json:"pkg_desc"`
+	ImportingPkgSig   string `json:"sig"`
+	ReasonToImportPkg string `json:"reason_to_import"`
+	Platform          string `json:"platform"`
+	CIPRNum           int    `json:"ci_pr_num"`
 }

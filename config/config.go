@@ -6,27 +6,12 @@ import (
 	"github.com/opensourceways/software-package-github-server/message-server"
 	"github.com/opensourceways/software-package-github-server/mq"
 	"github.com/opensourceways/software-package-github-server/softwarepkg/infrastructure/codeimpl"
-	"github.com/opensourceways/software-package-github-server/softwarepkg/infrastructure/postgresql"
-	"github.com/opensourceways/software-package-github-server/softwarepkg/infrastructure/repoimpl"
-	"github.com/opensourceways/software-package-github-server/softwarepkg/infrastructure/repositoryimpl"
-	"github.com/opensourceways/software-package-github-server/softwarepkg/infrastructure/watchingimpl"
-	localutils "github.com/opensourceways/software-package-github-server/utils"
 )
-
-type PostgresqlConfig struct {
-	DB postgresql.Config `json:"db" required:"true"`
-
-	repositoryimpl.Config
-}
 
 type Config struct {
 	MQ            mq.Config            `json:"mq"`
-	Postgresql    PostgresqlConfig     `json:"postgresql"`
 	MessageServer messageserver.Config `json:"message_server"`
-	Repo          repoimpl.Config      `json:"repo"`
 	Code          codeimpl.Config      `json:"code"`
-	Watch         watchingimpl.Config  `json:"watch"`
-	Encryption    localutils.Config    `json:"encryption"`
 }
 
 func LoadConfig(path string) (*Config, error) {
@@ -46,11 +31,8 @@ func LoadConfig(path string) (*Config, error) {
 func (cfg *Config) configItems() []interface{} {
 	return []interface{}{
 		&cfg.MQ,
-		&cfg.Postgresql,
 		&cfg.MessageServer,
-		&cfg.Repo,
 		&cfg.Code,
-		&cfg.Watch,
 	}
 }
 

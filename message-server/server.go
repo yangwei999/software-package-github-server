@@ -8,7 +8,7 @@ import (
 	"github.com/opensourceways/software-package-github-server/softwarepkg/app"
 )
 
-func Init(s app.MessageService, c Config) *MessageServer {
+func Init(s app.PkgService, c Config) *MessageServer {
 	return &MessageServer{
 		cfg:     c,
 		service: s,
@@ -17,7 +17,7 @@ func Init(s app.MessageService, c Config) *MessageServer {
 
 type MessageServer struct {
 	cfg     Config
-	service app.MessageService
+	service app.PkgService
 }
 
 func (m *MessageServer) Run(ctx context.Context) error {
@@ -32,18 +32,18 @@ func (m *MessageServer) Run(ctx context.Context) error {
 
 func (m *MessageServer) subscribe() error {
 	h := map[string]mq.Handler{
-		m.cfg.Topics.NewPkg: m.handleNewPkg,
+		m.cfg.Topics.PushCode: m.handlePushCode,
 	}
 
 	return mq.Subscriber().Subscribe(m.cfg.Group, h)
 }
 
-func (m *MessageServer) handleNewPkg(data []byte) error {
-	msg := new(msgToHandleNewPkg)
+func (m *MessageServer) handlePushCode(data []byte) error {
+	msg := new(msgToHandlePushCode)
 
 	if err := json.Unmarshal(data, msg); err != nil {
 		return err
 	}
 
-	return m.service.HandleNewPkg(*msg)
+	return m.service.HandlePushCode(msg)
 }

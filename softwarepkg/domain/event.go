@@ -15,14 +15,6 @@ func (e *RepoCreatedEvent) Message() ([]byte, error) {
 	return json.Marshal(e)
 }
 
-func NewRepoCreatedEvent(pkgId, url string) RepoCreatedEvent {
-	return RepoCreatedEvent{
-		PkgId:    pkgId,
-		Platform: PlatformGithub,
-		RepoLink: url,
-	}
-}
-
 func NewCodePushedEvent(pkgId, link string) RepoCreatedEvent {
 	return RepoCreatedEvent{
 		PkgId:    pkgId,
