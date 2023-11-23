@@ -8,13 +8,13 @@ import (
 	"sync"
 	"syscall"
 
+	kafka "github.com/opensourceways/kafka-lib/agent"
 	"github.com/opensourceways/server-common-lib/logrusutil"
 	liboptions "github.com/opensourceways/server-common-lib/options"
 	"github.com/sirupsen/logrus"
 
 	"github.com/opensourceways/software-package-github-server/config"
 	"github.com/opensourceways/software-package-github-server/message-server"
-	"github.com/opensourceways/software-package-github-server/mq"
 	"github.com/opensourceways/software-package-github-server/softwarepkg/app"
 	"github.com/opensourceways/software-package-github-server/softwarepkg/infrastructure/codeimpl"
 	"github.com/opensourceways/software-package-github-server/softwarepkg/infrastructure/messageimpl"
@@ -51,11 +51,14 @@ func main() {
 		logrus.Fatalf("load config file failed: %v", err)
 	}
 
-	if err = mq.Init(&cfg.MQ, log); err != nil {
-		logrus.Fatalf("initialize mq failed, err:%v", err)
+	// kafka
+	if err = kafka.Init(&cfg.Kafka, log, nil, cfg.MessageServer.Group, false); err != nil {
+		logrus.Errorf("init kafka failed, err:%s", err.Error())
+
+		return
 	}
 
-	defer mq.Exit()
+	defer kafka.Exit()
 
 	pkgService := app.NewPkgService(
 		codeimpl.NewCodeImpl(cfg.Code),

@@ -4,7 +4,8 @@ import (
 	"context"
 	"encoding/json"
 
-	"github.com/opensourceways/software-package-github-server/mq"
+	kafka "github.com/opensourceways/kafka-lib/agent"
+
 	"github.com/opensourceways/software-package-github-server/softwarepkg/app"
 )
 
@@ -21,7 +22,8 @@ type MessageServer struct {
 }
 
 func (m *MessageServer) Run(ctx context.Context) error {
-	if err := m.subscribe(); err != nil {
+	err := kafka.Subscribe(m.cfg.Group, m.handlePushCode, []string{m.cfg.Topics.PushCode})
+	if err != nil {
 		return err
 	}
 
@@ -30,18 +32,10 @@ func (m *MessageServer) Run(ctx context.Context) error {
 	return nil
 }
 
-func (m *MessageServer) subscribe() error {
-	h := map[string]mq.Handler{
-		m.cfg.Topics.PushCode: m.handlePushCode,
-	}
-
-	return mq.Subscriber().Subscribe(m.cfg.Group, h)
-}
-
-func (m *MessageServer) handlePushCode(data []byte) error {
+func (m *MessageServer) handlePushCode(payload []byte, header map[string]string) error {
 	msg := new(msgToHandlePushCode)
 
-	if err := json.Unmarshal(data, msg); err != nil {
+	if err := json.Unmarshal(payload, msg); err != nil {
 		return err
 	}
 

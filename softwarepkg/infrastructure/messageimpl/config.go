@@ -5,6 +5,5 @@ type Config struct {
 }
 
 type TopicsToNotify struct {
-	CreatedRepo string `json:"created_repo" required:"true"`
-	PushedCode  string `json:"pushed_code"  required:"true"`
+	PushedCode string `json:"pushed_code"  required:"true"`
 }
