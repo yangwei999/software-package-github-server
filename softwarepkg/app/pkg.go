@@ -26,6 +26,10 @@ type pkgService struct {
 }
 
 func (p *pkgService) HandlePushCode(pkg *domain.PushCode) error {
+	if pkg.Platform != domain.PlatformGithub {
+		return nil
+	}
+
 	repoUrl, err := p.code.Push(pkg)
 	if err != nil {
 		logrus.Errorf("pkgId %s push code err: %s", pkg.PkgId, err.Error())
