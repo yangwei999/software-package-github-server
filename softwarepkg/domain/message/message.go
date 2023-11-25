@@ -5,6 +5,5 @@ type EventMessage interface {
 }
 
 type SoftwarePkgProducer interface {
-	NotifyRepoCreatedResult(EventMessage) error
 	NotifyCodePushedResult(EventMessage) error
 }

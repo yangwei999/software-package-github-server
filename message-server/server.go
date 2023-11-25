@@ -4,11 +4,12 @@ import (
 	"context"
 	"encoding/json"
 
-	"github.com/opensourceways/software-package-github-server/mq"
+	kafka "github.com/opensourceways/kafka-lib/agent"
+
 	"github.com/opensourceways/software-package-github-server/softwarepkg/app"
 )
 
-func Init(s app.MessageService, c Config) *MessageServer {
+func Init(s app.PkgService, c Config) *MessageServer {
 	return &MessageServer{
 		cfg:     c,
 		service: s,
@@ -17,11 +18,12 @@ func Init(s app.MessageService, c Config) *MessageServer {
 
 type MessageServer struct {
 	cfg     Config
-	service app.MessageService
+	service app.PkgService
 }
 
 func (m *MessageServer) Run(ctx context.Context) error {
-	if err := m.subscribe(); err != nil {
+	err := kafka.Subscribe(m.cfg.Group, m.handlePushCode, []string{m.cfg.Topics.PushCode})
+	if err != nil {
 		return err
 	}
 
@@ -30,20 +32,12 @@ func (m *MessageServer) Run(ctx context.Context) error {
 	return nil
 }
 
-func (m *MessageServer) subscribe() error {
-	h := map[string]mq.Handler{
-		m.cfg.Topics.NewPkg: m.handleNewPkg,
-	}
+func (m *MessageServer) handlePushCode(payload []byte, header map[string]string) error {
+	msg := new(msgToHandlePushCode)
 
-	return mq.Subscriber().Subscribe(m.cfg.Group, h)
-}
-
-func (m *MessageServer) handleNewPkg(data []byte) error {
-	msg := new(msgToHandleNewPkg)
-
-	if err := json.Unmarshal(data, msg); err != nil {
+	if err := json.Unmarshal(payload, msg); err != nil {
 		return err
 	}
 
-	return m.service.HandleNewPkg(*msg)
+	return m.service.HandlePushCode(msg)
 }

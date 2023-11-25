@@ -1,7 +1,8 @@
 package messageimpl
 
 import (
-	"github.com/opensourceways/software-package-github-server/mq"
+	kafka "github.com/opensourceways/kafka-lib/agent"
+
 	"github.com/opensourceways/software-package-github-server/softwarepkg/domain/message"
 )
 
@@ -15,10 +16,6 @@ type MessageImpl struct {
 	cfg Config
 }
 
-func (m *MessageImpl) NotifyRepoCreatedResult(msg message.EventMessage) error {
-	return send(m.cfg.TopicsToNotify.CreatedRepo, msg)
-}
-
 func (m *MessageImpl) NotifyCodePushedResult(msg message.EventMessage) error {
 	return send(m.cfg.TopicsToNotify.PushedCode, msg)
 }
@@ -29,5 +26,5 @@ func send(topic string, v message.EventMessage) error {
 		return err
 	}
 
-	return mq.Subscriber().Publish(topic, body)
+	return kafka.Publish(topic, nil, body)
 }

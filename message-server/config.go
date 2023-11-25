@@ -9,5 +9,5 @@ type Config struct {
 }
 
 type Topics struct {
-	NewPkg string `json:"new_pkg" required:"true"`
+	PushCode string `json:"push_code" required:"true"`
 }

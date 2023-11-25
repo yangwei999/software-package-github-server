@@ -6,62 +6,37 @@ import (
 	"github.com/opensourceways/software-package-github-server/softwarepkg/domain"
 	"github.com/opensourceways/software-package-github-server/softwarepkg/domain/code"
 	"github.com/opensourceways/software-package-github-server/softwarepkg/domain/message"
-	"github.com/opensourceways/software-package-github-server/softwarepkg/domain/repo"
-	"github.com/opensourceways/software-package-github-server/softwarepkg/domain/repository"
 )
 
 type PkgService interface {
-	HandleCreateRepo(*domain.SoftwarePkg) error
-	HandlePushCode(*domain.SoftwarePkg) error
+	HandlePushCode(pushCode *domain.PushCode) error
 }
 
-func NewPkgService(
-	r repo.Repo, repo repository.SoftwarePkg,
-	c code.Code, prod message.SoftwarePkgProducer,
+func NewPkgService(c code.Code, prod message.SoftwarePkgProducer,
 ) *pkgService {
 	return &pkgService{
-		repo:       r,
-		code:       c,
-		repository: repo,
-		producer:   prod,
+		code:     c,
+		producer: prod,
 	}
 }
 
 type pkgService struct {
-	repo       repo.Repo
-	code       code.Code
-	repository repository.SoftwarePkg
-	producer   message.SoftwarePkgProducer
+	code     code.Code
+	producer message.SoftwarePkgProducer
 }
 
-func (p *pkgService) HandleCreateRepo(pkg *domain.SoftwarePkg) error {
-	url, err := p.repo.CreateRepo(pkg.Name)
-	if err != nil {
-		return err
+func (p *pkgService) HandlePushCode(pkg *domain.PushCode) error {
+	if pkg.Platform != domain.PlatformGithub {
+		return nil
 	}
 
-	e := domain.NewRepoCreatedEvent(pkg.Id, url)
-	if err = p.producer.NotifyRepoCreatedResult(&e); err != nil {
-		return err
-	}
-
-	pkg.SetPkgStatusRepoCreated()
-
-	return p.repository.Save(pkg)
-}
-
-func (p *pkgService) HandlePushCode(pkg *domain.SoftwarePkg) error {
 	repoUrl, err := p.code.Push(pkg)
 	if err != nil {
-		logrus.Errorf("pkgId %s push code err: %s", pkg.Id, err.Error())
+		logrus.Errorf("pkgId %s push code err: %s", pkg.PkgId, err.Error())
 
 		return err
 	}
 
-	e := domain.NewCodePushedEvent(pkg.Id, repoUrl)
-	if err = p.producer.NotifyCodePushedResult(&e); err != nil {
-		return err
-	}
-
-	return p.repository.Remove(pkg.Id)
+	e := domain.NewCodePushedEvent(pkg.PkgId, repoUrl)
+	return p.producer.NotifyCodePushedResult(&e)
 }

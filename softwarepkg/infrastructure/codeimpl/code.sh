@@ -35,15 +35,11 @@ fi
 
 git clone $repo_url
 
-cp $ci_repo/*.spec $repo
-cp $ci_repo/*.rpm $repo
+cp $ci_repo/* $repo
 
 cd $repo
 
-rpm2cpio *.rpm | cpio -div
-rm -rf *.rpm
-
-git config user.username $user
+git config user.name $user
 git config user.email $email
 git add .
 git commit -m 'add spec and rpm'
