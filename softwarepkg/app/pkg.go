@@ -1,6 +1,8 @@
 package app
 
 import (
+	"fmt"
+
 	"github.com/sirupsen/logrus"
 
 	"github.com/opensourceways/software-package-github-server/softwarepkg/domain"
@@ -28,6 +30,10 @@ type pkgService struct {
 func (p *pkgService) HandlePushCode(pkg *domain.PushCode) error {
 	if pkg.Platform != domain.PlatformGithub {
 		return nil
+	}
+
+	if !p.code.CheckRepoCreated(pkg.PkgName) {
+		return fmt.Errorf("repo %s has not been created", pkg.PkgName)
 	}
 
 	repoUrl, err := p.code.Push(pkg)
