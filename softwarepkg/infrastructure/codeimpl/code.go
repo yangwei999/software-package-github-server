@@ -3,7 +3,6 @@ package codeimpl
 import (
 	"fmt"
 	"net/http"
-	"strconv"
 	"time"
 
 	"github.com/opensourceways/server-common-lib/utils"
@@ -51,11 +50,10 @@ func (impl *CodeImpl) Push(pkg *domain.PushCode) (string, error) {
 		impl.script,
 		repoUrl,
 		pkg.PkgName,
-		pkg.Importer,
-		pkg.ImporterEmail,
+		pkg.Importer.Name,
+		pkg.Importer.Email,
 		impl.ciRepo.Link,
 		impl.ciRepo.Repo,
-		strconv.Itoa(pkg.CIPRNum),
 	}
 
 	out, err, _ := utils.RunCmd(params...)
