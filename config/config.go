@@ -35,6 +35,7 @@ func (cfg *Config) configItems() []interface{} {
 		&cfg.Kafka,
 		&cfg.MessageServer,
 		&cfg.Code,
+		&cfg.OmApi,
 	}
 }
 
