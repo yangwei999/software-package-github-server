@@ -4,4 +4,5 @@ import "github.com/opensourceways/software-package-github-server/softwarepkg/dom
 
 type Code interface {
 	Push(*domain.PushCode) (string, error)
+	CheckRepoCreated(string) bool
 }

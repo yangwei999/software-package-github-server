@@ -6,12 +6,14 @@ import (
 
 	"github.com/opensourceways/software-package-github-server/message-server"
 	"github.com/opensourceways/software-package-github-server/softwarepkg/infrastructure/codeimpl"
+	"github.com/opensourceways/software-package-github-server/softwarepkg/infrastructure/useradapterimpl"
 )
 
 type Config struct {
-	Kafka         kafka.Config         `json:"kafka"`
-	MessageServer messageserver.Config `json:"message_server"`
-	Code          codeimpl.Config      `json:"code"`
+	Kafka         kafka.Config           `json:"kafka"`
+	MessageServer messageserver.Config   `json:"message_server"`
+	Code          codeimpl.Config        `json:"code"`
+	OmApi         useradapterimpl.Config `json:"om_api"`
 }
 
 func LoadConfig(path string) (*Config, error) {
@@ -33,6 +35,7 @@ func (cfg *Config) configItems() []interface{} {
 		&cfg.Kafka,
 		&cfg.MessageServer,
 		&cfg.Code,
+		&cfg.OmApi,
 	}
 }
 

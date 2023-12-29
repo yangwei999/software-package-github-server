@@ -18,10 +18,13 @@ RUN dnf -y update && \
     groupadd -g 1000 software-package-github-server && \
     useradd -u 1000 -g software-package-github-server -s /bin/bash -m software-package-github-server
 
-USER software-package-github-server
 
 COPY --chown=software-package-github-server --from=BUILDER /go/src/github.com/opensourceways/software-package-github-server/software-package-github-server /opt/app/software-package-github-server
 COPY --chown=software-package-github-server softwarepkg/infrastructure/codeimpl/code.sh /opt/app/code.sh
 RUN chmod +x /opt/app/code.sh
+
+USER software-package-github-server
+
+WORKDIR /opt/app/
 
 ENTRYPOINT ["/opt/app/software-package-github-server"]

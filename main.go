@@ -18,6 +18,7 @@ import (
 	"github.com/opensourceways/software-package-github-server/softwarepkg/app"
 	"github.com/opensourceways/software-package-github-server/softwarepkg/infrastructure/codeimpl"
 	"github.com/opensourceways/software-package-github-server/softwarepkg/infrastructure/messageimpl"
+	"github.com/opensourceways/software-package-github-server/softwarepkg/infrastructure/useradapterimpl"
 )
 
 type options struct {
@@ -63,6 +64,7 @@ func main() {
 	pkgService := app.NewPkgService(
 		codeimpl.NewCodeImpl(cfg.Code),
 		messageimpl.NewMessageImpl(cfg.MessageServer.Message),
+		useradapterimpl.NewAdapterImpl(&cfg.OmApi),
 	)
 
 	ms := messageserver.Init(pkgService, cfg.MessageServer)
