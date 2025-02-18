@@ -35,6 +35,7 @@ git clone $repo_url
 cp $ci_repo/* $repo
 
 cd $repo
+git restore README*
 
 git config user.name $user
 git config user.email $email
